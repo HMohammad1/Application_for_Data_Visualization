@@ -8,8 +8,11 @@ class ReadData:
         global df
         df = pd.read_json('sample_small.json', lines=True)
         dataframe = pd.DataFrame(df, columns=['env_doc_id', 'visitor_country'])
-        rslt_df = dataframe[(dataframe['env_doc_id'] == '100528230144-02f68abad20e46449b72482dce6a06a4')]
-        print(dataframe.to_string())
+        rslt_df = dataframe[(dataframe['env_doc_id'] == '140224132818-2a89379e80cb7340d8504ad002fab76d')]
+        cool = len(dataframe[(dataframe['env_doc_id'] == '140224132818-2a89379e80cb7340d8504ad002fab76d') & (dataframe['visitor_country']== 'TH')])
+        x = rslt_df['visitor_country'].value_counts()
+        # print(dataframe.to_string())
+        print(x)
 
     def query(self):
         df1 = df[['env_doc_id']]
