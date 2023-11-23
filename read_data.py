@@ -8,7 +8,7 @@ class ReadData:
         global df
         df = pd.read_json('sample_small.json', lines=True)
         dataframe = pd.DataFrame(df, columns=['env_doc_id', 'visitor_country'])
-        rslt_df = dataframe[(dataframe['env_doc_id'] == '130603065734-ceaa7b2404edf4a85e5563d0860e9b65')]
+        rslt_df = dataframe[(dataframe['env_doc_id'] == '140227170505-3f2a61697e872609b7e5fa39ee27c8b0')]
         cool = len(dataframe[(dataframe['env_doc_id'] == '140223031538-3e15e64ec39fbe82dabe39ac43dc4a63')])
         x = rslt_df['visitor_country'].value_counts()
         # print(dataframe.to_string())
@@ -19,3 +19,9 @@ class ReadData:
         # item = df1.split('-')[0]
         print(df1)
         return df1
+    
+    def countries_df():
+        dataframe = pd.DataFrame(df, columns=['env_doc_id', 'visitor_country'])
+        rslt_df = dataframe[(dataframe['env_doc_id'] == '140227170505-3f2a61697e872609b7e5fa39ee27c8b0')]
+        return rslt_df
+    
