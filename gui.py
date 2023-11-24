@@ -53,11 +53,11 @@ class Gui:
         current_file_label.place(x = 380, y = 20, width = 250)
 
         # Input field
-        input_label = Label(self.master, text="Input file", bg='bisque')
+        input_label = Label(self.master, text='Document ID: ', bg='bisque')
         input_box = Entry(textvariable=self.input_doc_id)
         input_label.pack()
         input_box.pack()  
-        input_label.place(x = 135, y = 55)
+        input_label.place(x = 50, y = 55)
         input_box.place(x = 50, y = 85, width = 250)
         set_file_button = Button(master=self.master, text='Load', command=self.load)
         set_file_button.pack()
