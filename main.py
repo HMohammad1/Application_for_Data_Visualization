@@ -2,11 +2,8 @@ from task import Task
 from gui import Gui
 from read_data import ReadData
 
-if __name__ == '__main__':
-    # d = Gui()
-    # d.show()
-    # f = ReadData()
-    # f.query()
+global doc_id
+global input_doc_id
 
-    t = Task()
-    t.show()
+if __name__ == '__main__':
+    d = Gui()
