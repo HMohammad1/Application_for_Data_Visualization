@@ -25,14 +25,15 @@ class Gui:
     # Generate graph
     # task_number denotes what task to display on the graph
     def graph(self, task_number, graph_name, x_axis, y_axis):
+        # clear the graph and toolbar when displaying new graphs
         if self.clear_graph is not None:
             self.clear_graph.destroy()
             self.toolbar.pack_forget()
 
         t = Task(self.doc_id) # new task object
-        print(self.doc_id)
         x = None
         y = None
+        # display the graph depending on which button is pressed
         if task_number == 1:
             x, y = t.task_2_a()
         if task_number == 2:

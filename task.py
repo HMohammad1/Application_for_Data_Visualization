@@ -20,6 +20,7 @@ class Task:
 
     def task_2_b(self):
         unique, values = self.task_2_a()
+        # the different continent codes
         continent = {
             'NA': 0,
             'SA': 0,
@@ -29,6 +30,7 @@ class Task:
             'OC': 0,
             'AN': 0
         }
+        # the different continent names
         continent_names = {
             'NA': 'North America',
             'SA': 'South America',
@@ -40,10 +42,12 @@ class Task:
         }
         continents = []
         continents_values = []
+        # loop over each value in unique (country codes) and add the number of viewers to the dictionary
         for i, j in enumerate(unique):
             continent_code = pc.country_alpha2_to_continent_code(j)
             if continent_code in continent:
                 continent[continent_code] += values[i]
+        # return the continents and viewers that are not empty (so not 0)
         for key, value in continent.items():
             if value != 0:
                 continent_name = continent_names.get(key)
