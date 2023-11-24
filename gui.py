@@ -1,41 +1,51 @@
 from tkinter import *
 from task import Task
-from matplotlib.figure import Figure 
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 
 class Gui:
 
     global master
+    clear_graph = None
 
     # Load new file
+    # Load new file
     def load(self):
-        file = self.input_doc_id.get() # get user input
-        self.doc_id = file # update current file
-        print("New file:", self.doc_id) # debug
+        file = self.input_doc_id.get()  # get user input
+        self.doc_id = file  # update current file
+        # get rid of white spaces
+        self.doc_id.replace(" ", "")
+        print("New file:", self.doc_id)  # debug
         new_file_label = Label(master=self.master, text=self.doc_id, bg='bisque')
         new_file_label.pack()
-        new_file_label.place(x = 600, y = 20)
+        new_file_label.place(x=600, y=20)
 
-    # Generate graph 
-    def graph(self):
+    # Generate graph
+    # task_number denotes what task to display on the graph
+    def graph(self, task_number):
+        if self.clear_graph is not None:
+            self.clear_graph.destroy()
         t = Task(self.doc_id) # new task object
-        x = t.unique() # get x labels
-        y = t.values() # get y values  
+        print(self.doc_id)
+        x = None
+        y = None
+        if task_number == 1:
+            x, y = t.task_2_a()
+        if task_number == 2:
+            x, y = t.task_2_b()
 
         figure = Figure(figsize=(5,5), dpi=100) # creates new figure
         figure_canvas = FigureCanvasTkAgg(figure, graph_frame) # new canvas to insert in figure
         NavigationToolbar2Tk(figure_canvas, graph_frame) # add graph toolbar
-
         axes = figure.add_subplot()
-
         axes.bar(x, y)
         axes.set_title('Viewers by Country')
         axes.set_xlabel('Countries')
         axes.set_ylabel('Viewers')
-
         figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1) # displays graph
-        
+        self.clear_graph = figure_canvas.get_tk_widget()
+
     def __init__(self):
         global graph_frame
 
@@ -56,7 +66,7 @@ class Gui:
         input_label = Label(self.master, text='Document ID: ', bg='bisque')
         input_box = Entry(textvariable=self.input_doc_id)
         input_label.pack()
-        input_box.pack()  
+        input_box.pack()
         input_label.place(x = 50, y = 55)
         input_box.place(x = 50, y = 85, width = 250)
         set_file_button = Button(master=self.master, text='Load', command=self.load)
@@ -64,10 +74,10 @@ class Gui:
         set_file_button.place(x = 136, y = 120)
 
         # Buttons
-        button_views_by_country = Button(master=self.master, command=self.graph, text ="Views by country", bg='white')
+        button_views_by_country = Button(master=self.master, command=lambda: self.graph(1), text ="Views by country", bg='white')
         button_views_by_country.place(x=50, y=180, width=250, height=50)
 
-        button_views_by_continent = Button(master=self.master, text ="Views by continent", bg='white')
+        button_views_by_continent = Button(master=self.master, command=lambda: self.graph(2), text ="Views by continent", bg='white')
         button_views_by_continent.place(x=50, y=260, width=250, height=50)
 
         button_views_by_browser = Button(master=self.master, text ="Views by browser", bg='white')
@@ -83,6 +93,6 @@ class Gui:
         graph_frame = Frame(self.master, bg='white')
         graph_frame.place(x=450, y=150, width=950, height=700)
 
-        self.master.mainloop() 
+        self.master.mainloop()
 
-    
+

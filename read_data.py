@@ -1,7 +1,7 @@
 import pandas as pd
 
-class ReadData:
 
+class ReadData:
     global data
 
     def __init__(self):
@@ -11,11 +11,9 @@ class ReadData:
         dataframe = pd.DataFrame(self.data, columns=['env_doc_id', 'visitor_country'])
         rslt_df = dataframe[(dataframe['env_doc_id'] == doc_id)]
         return rslt_df
-    
+
     def query(self):
-        df1 = data[['env_doc_id']]
+        df1 = self.data[['env_doc_id']]
         # item = df1.split('-')[0]
-        print(df1)
+        print(df1.to_string())
         return df1
-    
-    
