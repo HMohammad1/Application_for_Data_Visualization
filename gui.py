@@ -3,6 +3,7 @@ from task import Task
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
+import re
 
 class Gui:
 
@@ -13,9 +14,8 @@ class Gui:
     # Load new file
     def load(self):
         file = self.input_doc_id.get()  # get user input
-        self.doc_id = file  # update current file
-        # get rid of white spaces
-        self.doc_id.replace(" ", "")
+        # update current file and get rid of white spaces
+        self.doc_id = re.sub(r"\s+", "", file)
         print("New file:", self.doc_id)  # debug
         new_file_label = Label(master=self.master, text=self.doc_id, bg='bisque')
         new_file_label.pack()
