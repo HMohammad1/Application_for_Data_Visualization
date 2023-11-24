@@ -9,6 +9,7 @@ class Gui:
 
     global master
     clear_graph = None
+    toolbar = None
 
     # Load new file
     # Load new file
@@ -23,9 +24,11 @@ class Gui:
 
     # Generate graph
     # task_number denotes what task to display on the graph
-    def graph(self, task_number):
+    def graph(self, task_number, graph_name, x_axis, y_axis):
         if self.clear_graph is not None:
             self.clear_graph.destroy()
+            self.toolbar.pack_forget()
+
         t = Task(self.doc_id) # new task object
         print(self.doc_id)
         x = None
@@ -37,12 +40,12 @@ class Gui:
 
         figure = Figure(figsize=(5,5), dpi=100) # creates new figure
         figure_canvas = FigureCanvasTkAgg(figure, graph_frame) # new canvas to insert in figure
-        NavigationToolbar2Tk(figure_canvas, graph_frame) # add graph toolbar
+        self.toolbar = NavigationToolbar2Tk(figure_canvas, graph_frame) # add graph toolbar
         axes = figure.add_subplot()
         axes.bar(x, y)
-        axes.set_title('Viewers by Country')
-        axes.set_xlabel('Countries')
-        axes.set_ylabel('Viewers')
+        axes.set_title(graph_name)
+        axes.set_xlabel(x_axis)
+        axes.set_ylabel(y_axis)
         figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1) # displays graph
         self.clear_graph = figure_canvas.get_tk_widget()
 
@@ -74,10 +77,10 @@ class Gui:
         set_file_button.place(x = 136, y = 120)
 
         # Buttons
-        button_views_by_country = Button(master=self.master, command=lambda: self.graph(1), text ="Views by country", bg='white')
+        button_views_by_country = Button(master=self.master, command=lambda: self.graph(1, 'Viewers by Country', 'Countries', 'Viewers'), text ="Views by country", bg='white')
         button_views_by_country.place(x=50, y=180, width=250, height=50)
 
-        button_views_by_continent = Button(master=self.master, command=lambda: self.graph(2), text ="Views by continent", bg='white')
+        button_views_by_continent = Button(master=self.master, command=lambda: self.graph(2, 'Viewers by Continent', 'Continents', 'Viewers'), text ="Views by continent", bg='white')
         button_views_by_continent.place(x=50, y=260, width=250, height=50)
 
         button_views_by_browser = Button(master=self.master, text ="Views by browser", bg='white')
