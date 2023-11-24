@@ -1,27 +1,21 @@
 import pandas as pd
 
-
 class ReadData:
-    global df
+
+    global data
 
     def __init__(self):
-        global df
-        df = pd.read_json('sample_small.json', lines=True)
-        dataframe = pd.DataFrame(df, columns=['env_doc_id', 'visitor_country'])
-        rslt_df = dataframe[(dataframe['env_doc_id'] == '140227170505-3f2a61697e872609b7e5fa39ee27c8b0')]
-        cool = len(dataframe[(dataframe['env_doc_id'] == '140223031538-3e15e64ec39fbe82dabe39ac43dc4a63')])
-        x = rslt_df['visitor_country'].value_counts()
-        # print(dataframe.to_string())
-        print(rslt_df.to_string())
+        self.data = pd.read_json('sample_small.json', lines=True)
 
+    def get_df(self, doc_id):
+        dataframe = pd.DataFrame(self.data, columns=['env_doc_id', 'visitor_country'])
+        rslt_df = dataframe[(dataframe['env_doc_id'] == doc_id)]
+        return rslt_df
+    
     def query(self):
-        df1 = df[['env_doc_id']]
+        df1 = data[['env_doc_id']]
         # item = df1.split('-')[0]
         print(df1)
         return df1
     
-    def countries_df():
-        dataframe = pd.DataFrame(df, columns=['env_doc_id', 'visitor_country'])
-        rslt_df = dataframe[(dataframe['env_doc_id'] == '140227170505-3f2a61697e872609b7e5fa39ee27c8b0')]
-        return rslt_df
     
