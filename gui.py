@@ -1,4 +1,5 @@
 from tkinter import *
+import numpy as np
 from task import Task
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -12,12 +13,11 @@ class Gui:
     toolbar = None
 
     # Load new file
-    # Load new file
     def load(self):
-        file = self.input_doc_id.get()  # get user input
+        # get user input
+        file = self.input_doc_id.get()
         # update current file and get rid of white spaces
         self.doc_id = re.sub(r"\s+", "", file)
-        print("New file:", self.doc_id)  # debug
         new_file_label = Label(master=self.master, text=self.doc_id, bg='bisque')
         new_file_label.pack()
         new_file_label.place(x=600, y=20)
@@ -28,26 +28,41 @@ class Gui:
         # clear the graph and toolbar when displaying new graphs
         if self.clear_graph is not None:
             self.clear_graph.destroy()
-            self.toolbar.pack_forget()
 
-        t = Task(self.doc_id) # new task object
+        t = Task()
         x = None
         y = None
         # display the graph depending on which button is pressed
         if task_number == 1:
-            x, y = t.task_2_a()
+            x, y = t.task_2_a(self.doc_id)
         if task_number == 2:
-            x, y = t.task_2_b()
+            x, y = t.task_2_b(self.doc_id)
+        if task_number == 4:
+            x, y = t.task_4()
 
-        figure = Figure(figsize=(5,5), dpi=100) # creates new figure
-        figure_canvas = FigureCanvasTkAgg(figure, graph_frame) # new canvas to insert in figure
-        self.toolbar = NavigationToolbar2Tk(figure_canvas, graph_frame) # add graph toolbar
+        # creates new figure
+        figure = Figure(figsize=(5,6), dpi=100) 
+        # new canvas to insert in figure
+        figure_canvas = FigureCanvasTkAgg(figure, graph_frame) 
+        # add graph toolbar
+        #self.toolbar = NavigationToolbar2Tk(figure_canvas, graph_frame) 
         axes = figure.add_subplot()
         axes.bar(x, y)
-        axes.set_title(graph_name)
-        axes.set_xlabel(x_axis)
-        axes.set_ylabel(y_axis)
-        figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1) # displays graph
+        axes.set_title(graph_name, fontsize=12)
+        axes.set_xlabel(x_axis, fontsize=12)
+        axes.set_ylabel(y_axis, fontsize=12)
+        axes.tick_params(axis='x', labelsize=10)
+        # adjusts labels for reader profiles to fit in frame
+        if task_number == 4:
+            current_ticks = axes.get_xticks()
+            adjusted_ticks = np.array(current_ticks)-0.5
+            axes.set_xticks(adjusted_ticks)
+            axes.tick_params(axis='x', rotation=20, labelsize=6)
+            axes.tick_params(axis='y', rotation=20, labelsize=8)
+            axes.get_yaxis().get_major_formatter().set_scientific(False)
+        # formats graph
+        figure.subplots_adjust(bottom=0.1)
+        figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=0.5) 
         self.clear_graph = figure_canvas.get_tk_widget()
 
     def __init__(self):
@@ -87,7 +102,7 @@ class Gui:
         button_views_by_browser = Button(master=self.master, text ="Views by browser", bg='white')
         button_views_by_browser.place(x=50, y=340, width=250, height=50)
 
-        button_reader_profiles = Button(master=self.master, text ="Reader profiles", bg='white')
+        button_reader_profiles = Button(master=self.master, command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers', 'Visitor UUID', 'Time Spent Reading'), text ="Reader profiles", bg='white')
         button_reader_profiles.place(x=50, y=420, width=250, height=50)
 
         # Vertical line
@@ -95,7 +110,7 @@ class Gui:
 
         # Graph frame
         graph_frame = Frame(self.master, bg='white')
-        graph_frame.place(x=450, y=150, width=950, height=700)
+        graph_frame.place(x=400, y=150, width=1050, height=700)
 
         self.master.mainloop()
 
