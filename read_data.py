@@ -7,13 +7,12 @@ class ReadData:
     def __init__(self):
         self.data = pd.read_json('sample_small.json', lines=True)
 
-    def get_df(self, doc_id):
+    def get_country_df(self, doc_id):
         dataframe = pd.DataFrame(self.data, columns=['env_doc_id', 'visitor_country'])
         rslt_df = dataframe[(dataframe['env_doc_id'] == doc_id)]
         return rslt_df
-
-    def query(self):
-        df1 = self.data[['env_doc_id']]
-        # item = df1.split('-')[0]
-        print(df1.to_string())
-        return df1
+    
+    def get_reader_df(self):
+        dataframe = pd.DataFrame(self.data, columns=['visitor_uuid', 'event_readtime'])
+        rslt_df = dataframe[pd.notna(dataframe['event_readtime'])]
+        return rslt_df
