@@ -2,24 +2,30 @@ import matplotlib.pyplot as plt
 import numpy as np
 from read_data import ReadData
 import pycountry_convert as pc
+from itertools import islice
 
-plt.style.use('fivethirtyeight')  # makes the graph look nicer
-
+# makes the graph look nicer
+plt.style.use('fivethirtyeight')  
 
 class Task:
-    global df
+    global data
+    global country_df
+    global reader_df
 
-    def __init__(self, doc_id):
-        data = ReadData()  # do not delete - required for line below
-        self.df = data.get_df(doc_id)  # gets dataframe
+    def __init__(self):
+        # do not delete - required for line below
+        self.data = ReadData()
 
-    def task_2_a(self):
-        unique = self.df['visitor_country'].unique()  # find unique y-labels
-        values = self.df['visitor_country'].value_counts()  # find number of occurrences for each label
+    def task_2_a(self, doc_id):
+        self.country_df = self.data.get_country_df(doc_id)
+        # find unique y-labels
+        unique = self.country_df['visitor_country'].unique()  
+        # find number of occurrences for each label
+        values = self.country_df['visitor_country'].value_counts() 
         return unique, values
 
-    def task_2_b(self):
-        unique, values = self.task_2_a()
+    def task_2_b(self, doc_id):
+        unique, values = self.task_2_a(doc_id)
         # the different continent names and codes
         continent_names = {
             'NA': 'North America',
@@ -47,3 +53,31 @@ class Task:
             continents_values.append(value)
             # print(f"Key: {key}, Value: {value}")
         return continents, continents_values
+    
+    def task_4(self):
+        self.reader_df = self.data.get_reader_df()
+        # list of unique user ids       
+        unique_ids_to_match= self.reader_df['visitor_uuid'].unique()
+        # list of user ids and read time
+        userid_readtime_dict = self.reader_df.to_dict(orient='records')
+        # loop through dictionary and get all read times for each user id
+        d = {}
+        for id in unique_ids_to_match:
+            for record in userid_readtime_dict:
+                if record['visitor_uuid'] == id:
+                    d.setdefault(id, []).append(record['event_readtime'])
+        # sum readtimes for each user id
+        for user_id, readtime in d.items():
+            d[user_id] = sum(readtime)
+        # sort dictionary by highest readtime
+        sorted_by_readtime = dict(sorted(d.items(), key=lambda item:item[1], reverse=True)) 
+        # slice first ten records from dict
+        highest_readtime = dict(islice(sorted_by_readtime.items(), 10))
+        user_ids = list(highest_readtime.keys())
+        readtimes = list(highest_readtime.values())
+        return user_ids, readtimes
+
+
+
+
+        
