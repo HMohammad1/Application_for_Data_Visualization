@@ -5,7 +5,7 @@ import pycountry_convert as pc
 from itertools import islice
 
 # makes the graph look nicer
-plt.style.use('fivethirtyeight')  
+plt.style.use('fivethirtyeight')
 
 class Task:
     global data
@@ -19,9 +19,9 @@ class Task:
     def task_2_a(self, doc_id):
         self.country_df = self.data.get_country_df(doc_id)
         # find unique y-labels
-        unique = self.country_df['visitor_country'].unique()  
+        unique = self.country_df['visitor_country'].unique()
         # find number of occurrences for each label
-        values = self.country_df['visitor_country'].value_counts() 
+        values = self.country_df['visitor_country'].value_counts()
         return unique, values
 
     def task_2_b(self, doc_id):
@@ -53,7 +53,7 @@ class Task:
             continents_values.append(value)
             # print(f"Key: {key}, Value: {value}")
         return continents, continents_values
-    
+
     def task_4(self):
         self.reader_df = self.data.get_reader_df()
         # list of unique user ids       
@@ -70,14 +70,48 @@ class Task:
         for user_id, readtime in d.items():
             d[user_id] = sum(readtime)
         # sort dictionary by highest readtime
-        sorted_by_readtime = dict(sorted(d.items(), key=lambda item:item[1], reverse=True)) 
+        sorted_by_readtime = dict(sorted(d.items(), key=lambda item:item[1], reverse=True))
         # slice first ten records from dict
         highest_readtime = dict(islice(sorted_by_readtime.items(), 10))
         user_ids = list(highest_readtime.keys())
         readtimes = list(highest_readtime.values())
         return user_ids, readtimes
 
+    def task_5_a(self, doc_id):
+        return self.data.get_visitor_df(doc_id)
+
+    def task_5_b(self, visitor_id):
+        return self.data.get_visitor_doc_id(visitor_id)
+
+    def task_5_d(self, doc_id):
+        # get all visitor ID's to iterate through
+        visitors = self.task_5_a(doc_id)
+        unique_docs = set()
+        # add each document of each visitor to a set ( so no duplicates allowed)
+        for visitor in visitors:
+            docs = self.task_5_b(visitor)
+            for doc in docs:
+                unique_docs.add(doc)
+        d = {}
+        # for each doc ID in the unique_docs set get the total number of viewers
+        for doc in unique_docs:
+            visitor = self.data.get_visitor_df(doc)
+            d[doc] = len(visitor)
+        # sort the doc ID viewers from high to low
+        sorted_viewers = {k: v for k, v in sorted(d.items(), key=lambda item: item[1], reverse=True)}
+        # return the top 10 doc ID's from the sorted list
+        top_10_results = dict(list(sorted_viewers.items())[:10])
+        documents = []
+        viewers = []
+        # for each item in top_10_results append the key (doc ID) and value (number of viewers) and to be returned
+        # for the graph
+        for key, value in top_10_results.items():
+            documents.append(key)
+            viewers.append(value)
+        return documents, viewers
 
 
 
-        
+
+
+
