@@ -6,8 +6,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 import re
 
-class Gui:
 
+class Gui:
     global master
     clear_graph = None
     toolbar = None
@@ -39,13 +39,15 @@ class Gui:
             x, y = t.task_2_b(self.doc_id)
         if task_number == 4:
             x, y = t.task_4()
+        if task_number == 5:
+            x, y = t.task_5_d(self.doc_id)
 
         # creates new figure
-        figure = Figure(figsize=(5,6), dpi=100) 
+        figure = Figure(figsize=(10, 10), dpi=70)
         # new canvas to insert in figure
-        figure_canvas = FigureCanvasTkAgg(figure, graph_frame) 
+        figure_canvas = FigureCanvasTkAgg(figure, graph_frame)
         # add graph toolbar
-        #self.toolbar = NavigationToolbar2Tk(figure_canvas, graph_frame) 
+        # self.toolbar = NavigationToolbar2Tk(figure_canvas, graph_frame)
         axes = figure.add_subplot()
         axes.bar(x, y)
         axes.set_title(graph_name, fontsize=12)
@@ -55,14 +57,16 @@ class Gui:
         # adjusts labels for reader profiles to fit in frame
         if task_number == 4:
             current_ticks = axes.get_xticks()
-            adjusted_ticks = np.array(current_ticks)-0.5
+            adjusted_ticks = np.array(current_ticks) - 0.5
             axes.set_xticks(adjusted_ticks)
             axes.tick_params(axis='x', rotation=20, labelsize=6)
             axes.tick_params(axis='y', rotation=20, labelsize=8)
             axes.get_yaxis().get_major_formatter().set_scientific(False)
-        # formats graph
-        figure.subplots_adjust(bottom=0.1)
-        figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=0.5) 
+            figure.subplots_adjust(bottom=0.1)
+        if task_number == 5:
+            axes.tick_params(axis='x', rotation=60, labelsize=5)
+            figure.subplots_adjust(bottom=0.2)
+        figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=0.5)
         self.clear_graph = figure_canvas.get_tk_widget()
 
     def __init__(self):
@@ -79,39 +83,49 @@ class Gui:
         self.current_file = "Current file: "
         current_file_label = Label(self.master, text='Current file: ', bg='bisque')
         current_file_label.pack()
-        current_file_label.place(x = 380, y = 20, width = 250)
+        current_file_label.place(x=380, y=20, width=250)
 
         # Input field
         input_label = Label(self.master, text='Document ID: ', bg='bisque')
         input_box = Entry(textvariable=self.input_doc_id)
         input_label.pack()
         input_box.pack()
-        input_label.place(x = 50, y = 55)
-        input_box.place(x = 50, y = 85, width = 250)
+        input_label.place(x=50, y=55)
+        input_box.place(x=50, y=85, width=250)
         set_file_button = Button(master=self.master, text='Load', command=self.load)
         set_file_button.pack()
-        set_file_button.place(x = 136, y = 120)
+        set_file_button.place(x=136, y=120)
 
         # Buttons
-        button_views_by_country = Button(master=self.master, command=lambda: self.graph(1, 'Viewers by Country', 'Countries', 'Viewers'), text ="Views by country", bg='white')
+        button_views_by_country = Button(master=self.master,
+                                         command=lambda: self.graph(1, 'Viewers by Country', 'Countries', 'Viewers'),
+                                         text="Views by country", bg='white')
         button_views_by_country.place(x=50, y=180, width=250, height=50)
 
-        button_views_by_continent = Button(master=self.master, command=lambda: self.graph(2, 'Viewers by Continent', 'Continents', 'Viewers'), text ="Views by continent", bg='white')
+        button_views_by_continent = Button(master=self.master,
+                                           command=lambda: self.graph(2, 'Viewers by Continent', 'Continents',
+                                                                      'Viewers'), text="Views by continent", bg='white')
         button_views_by_continent.place(x=50, y=260, width=250, height=50)
 
-        button_views_by_browser = Button(master=self.master, text ="Views by browser", bg='white')
+        button_views_by_browser = Button(master=self.master, text="Views by browser", bg='white')
         button_views_by_browser.place(x=50, y=340, width=250, height=50)
 
-        button_reader_profiles = Button(master=self.master, command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers', 'Visitor UUID', 'Time Spent Reading'), text ="Reader profiles", bg='white')
+        button_reader_profiles = Button(master=self.master,
+                                        command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers',
+                                                                   'Visitor UUID', 'Time Spent Reading'),
+                                        text="Reader profiles", bg='white')
         button_reader_profiles.place(x=50, y=420, width=250, height=50)
+
+        button_reader_profiles = Button(master=self.master,
+                                        command=lambda: self.graph(5, 'Also Likes', 'Document UUID', 'No. of users'),
+                                        text="Also Likes", bg='white')
+        button_reader_profiles.place(x=50, y=520, width=250, height=50)
 
         # Vertical line
         canvas.create_line(350, 1500, 350, 0, fill="black", width=2)
 
         # Graph frame
         graph_frame = Frame(self.master, bg='white')
-        graph_frame.place(x=400, y=150, width=1050, height=700)
+        graph_frame.place(x=400, y=50, width=1100, height=800)
 
         self.master.mainloop()
-
-
