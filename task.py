@@ -92,13 +92,13 @@ class Task:
             docs = self.task_5_b(visitor)
             for doc in docs:
                 unique_docs.add(doc)
-        d = {}
+        sorted_doc = {}
         # for each doc ID in the unique_docs set get the total number of viewers
         for doc in unique_docs:
             visitor = self.data.get_visitor_df(doc)
-            d[doc] = len(visitor)
+            sorted_doc[doc] = len(visitor)
         # sort the doc ID viewers from high to low
-        sorted_viewers = {k: v for k, v in sorted(d.items(), key=lambda item: item[1], reverse=True)}
+        sorted_viewers = {k: v for k, v in sorted(sorted_doc.items(), key=lambda item: item[1], reverse=True)}
         # return the top 10 doc ID's from the sorted list
         top_10_results = dict(list(sorted_viewers.items())[:10])
         documents = []
