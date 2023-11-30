@@ -7,6 +7,7 @@ from itertools import islice
 # makes the graph look nicer
 plt.style.use('fivethirtyeight')
 
+
 class Task:
     global data
     global country_df
@@ -57,7 +58,7 @@ class Task:
     def task_4(self):
         self.reader_df = self.data.get_reader_df()
         # list of unique user ids       
-        unique_ids_to_match= self.reader_df['visitor_uuid'].unique()
+        unique_ids_to_match = self.reader_df['visitor_uuid'].unique()
         # list of user ids and read time
         userid_readtime_dict = self.reader_df.to_dict(orient='records')
         # loop through dictionary and get all read times for each user id
@@ -70,7 +71,7 @@ class Task:
         for user_id, readtime in d.items():
             d[user_id] = sum(readtime)
         # sort dictionary by highest readtime
-        sorted_by_readtime = dict(sorted(d.items(), key=lambda item:item[1], reverse=True))
+        sorted_by_readtime = dict(sorted(d.items(), key=lambda item: item[1], reverse=True))
         # slice first ten records from dict
         highest_readtime = dict(islice(sorted_by_readtime.items(), 10))
         user_ids = list(highest_readtime.keys())
@@ -83,15 +84,32 @@ class Task:
     def task_5_b(self, visitor_id):
         return self.data.get_visitor_doc_id(visitor_id)
 
-    def task_5_d(self, doc_id):
-        # get all visitor ID's to iterate through
-        visitors = self.task_5_a(doc_id)
+    def task_5_c(self, doc_id, visitor_uuid=None, sorting_function=None):
+        if visitor_uuid:
+            v = self.task_5_a(doc_id)
+            visitors = []
+            for i in v.unique:
+                visitors.append(i)
+            visitors.append(visitor_uuid)
+        else:
+            visitors = self.task_5_a(doc_id)
+
         unique_docs = set()
         # add each document of each visitor to a set ( so no duplicates allowed)
         for visitor in visitors:
             docs = self.task_5_b(visitor)
             for doc in docs:
                 unique_docs.add(doc)
+
+        if sorting_function:
+            return sorting_function(unique_docs)
+        else:
+            return unique_docs
+
+    def task_5_d(self, doc_id):
+        return self.task_5_c(doc_id=doc_id, sorting_function=self.sorting_function)
+
+    def sorting_function(self, unique_docs):
         sorted_doc = {}
         # for each doc ID in the unique_docs set get the total number of viewers
         for doc in unique_docs:
@@ -109,9 +127,4 @@ class Task:
             documents.append(key)
             viewers.append(value)
         return documents, viewers
-
-
-
-
-
 

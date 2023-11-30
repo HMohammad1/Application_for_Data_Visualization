@@ -1,10 +1,14 @@
 from gui import Gui
-
+from task import Task
 global doc_id
 global input_doc_id
 
 if __name__ == '__main__':
-    # d = Task("120831070849-697c56ab376445eaadd13dbb8b6d34d0")
-    # d.task_2_b()
+    # d = Task()
+    # i, j = d.task_5_d("140228101942-d4c9bd33cc299cc53d584ca1a4bf15d9")
+    # print(i)
+    # print(j)
+
+    # d.task_5_d("140228101942-d4c9bd33cc299cc53d584ca1a4bf15d9")
     g = Gui()
 

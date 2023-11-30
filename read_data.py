@@ -5,13 +5,13 @@ class ReadData:
     global data
 
     def __init__(self):
-        self.data = pd.read_json('sample_100k_lines.json', lines=True)
+        self.data = pd.read_json('sample_600k_lines.json', lines=True)
 
     def get_country_df(self, doc_id):
         dataframe = pd.DataFrame(self.data, columns=['env_doc_id', 'visitor_country'])
         rslt_df = dataframe[(dataframe['env_doc_id'] == doc_id)]
         return rslt_df
-    
+
     def get_reader_df(self):
         dataframe = pd.DataFrame(self.data, columns=['visitor_uuid', 'event_readtime'])
         rslt_df = dataframe[pd.notna(dataframe['event_readtime'])]
