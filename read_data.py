@@ -26,3 +26,7 @@ class ReadData:
         doc = self.data[self.data['visitor_uuid'] == visitor]['env_doc_id'].astype(str)
         return set(doc.unique())
 
+    def get_browsers(self):
+        return self.data['visitor_useragent']
+
+

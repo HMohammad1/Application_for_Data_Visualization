@@ -3,6 +3,7 @@ import numpy as np
 from read_data import ReadData
 import pycountry_convert as pc
 from itertools import islice
+from user_agents import parse
 
 # makes the graph look nicer
 plt.style.use('fivethirtyeight')
@@ -55,6 +56,56 @@ class Task:
             # print(f"Key: {key}, Value: {value}")
         return continents, continents_values
 
+    def task_3_a(self):
+        browsers = self.data.get_browsers()
+        browser_counts = {}
+        for user_agent in browsers:
+            ua = parse(user_agent)
+            browser = ua.browser.family
+            if browser in browser_counts:
+                browser_counts[browser] += 1
+            else:
+                browser_counts[browser] = 1
+        browser = []
+        views = []
+        for key, value in browser_counts.items():
+            browser.append(key)
+            views.append(value)
+        return browser, views
+
+    def task_3_b(self):
+        dict = {
+            'Chrome': 0,
+            'Opera': 0,
+            'Firefox': 0,
+            'Safari': 0,
+            'IE': 0,
+            'Facebook': 0,
+            'Android': 0,
+            'Google': 0,
+            'Other': 0
+        }
+        browser, views = self.task_3_a()
+        found = False
+        for i, j in enumerate(browser):
+            for key in dict:
+                if key in j:
+                    dict[key] += views[i]
+                    found = True
+            if not found:
+                dict['Other'] += views[i]
+        print(dict)
+        new_browser = []
+        new_views = []
+        for key, value in dict.items():
+            new_browser.append(key)
+            new_views.append(value)
+
+        return new_browser, new_views
+
+
+
+
     def task_4(self):
         self.reader_df = self.data.get_reader_df()
         # list of unique user ids       
@@ -88,7 +139,7 @@ class Task:
         if visitor_uuid:
             v = self.task_5_a(doc_id)
             visitors = []
-            for i in v.unique:
+            for i in v.unique():
                 visitors.append(i)
             visitors.append(visitor_uuid)
         else:
@@ -107,7 +158,7 @@ class Task:
             return unique_docs
 
     def task_5_d(self, doc_id):
-        return self.task_5_c(doc_id=doc_id, sorting_function=self.sorting_function)
+        return self.task_5_c(doc_id=doc_id, visitor_uuid="d553098b2eed6771", sorting_function=self.sorting_function)
 
     def sorting_function(self, unique_docs):
         sorted_doc = {}
@@ -126,5 +177,6 @@ class Task:
         for key, value in top_10_results.items():
             documents.append(key)
             viewers.append(value)
+        print(documents)
         return documents, viewers
 

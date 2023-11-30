@@ -37,6 +37,10 @@ class Gui:
             x, y = t.task_2_a(self.doc_id)
         if task_number == 2:
             x, y = t.task_2_b(self.doc_id)
+        if task_number == 31:
+            x, y = t.task_3_a()
+        if task_number == 32:
+            x, y = t.task_3_b()
         if task_number == 4:
             x, y = t.task_4()
         if task_number == 5:
@@ -63,6 +67,9 @@ class Gui:
             axes.tick_params(axis='y', rotation=20, labelsize=8)
             axes.get_yaxis().get_major_formatter().set_scientific(False)
             figure.subplots_adjust(bottom=0.1)
+        if task_number == 31:
+            axes.tick_params(axis='x', rotation=60, labelsize=7)
+            figure.subplots_adjust(bottom=0.2)
         if task_number == 5:
             axes.tick_params(axis='x', rotation=60, labelsize=5)
             figure.subplots_adjust(bottom=0.2)
@@ -107,19 +114,24 @@ class Gui:
                                                                       'Viewers'), text="Views by continent", bg='white')
         button_views_by_continent.place(x=50, y=260, width=250, height=50)
 
-        button_views_by_browser = Button(master=self.master, text="Views by browser", bg='white')
+        button_views_by_browser = Button(master=self.master, command=lambda: self.graph(31, 'Views by Browser', 'Browser', 'Views'),text="Views by browser", bg='white')
         button_views_by_browser.place(x=50, y=340, width=250, height=50)
+
+        button_views_by_browser = Button(master=self.master,
+                                         command=lambda: self.graph(32, 'Views by Browser Simplified', 'Browser', 'Views'),
+                                         text="3b", bg='white')
+        button_views_by_browser.place(x=50, y=440, width=250, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers',
                                                                    'Visitor UUID', 'Time Spent Reading'),
                                         text="Reader profiles", bg='white')
-        button_reader_profiles.place(x=50, y=420, width=250, height=50)
+        button_reader_profiles.place(x=50, y=520, width=250, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(5, 'Also Likes', 'Document UUID', 'No. of users'),
                                         text="Also Likes", bg='white')
-        button_reader_profiles.place(x=50, y=520, width=250, height=50)
+        button_reader_profiles.place(x=50, y=620, width=250, height=50)
 
         # Vertical line
         canvas.create_line(350, 1500, 350, 0, fill="black", width=2)
