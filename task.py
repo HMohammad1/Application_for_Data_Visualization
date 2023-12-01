@@ -157,9 +157,9 @@ class Task:
         else:
             return unique_docs
 
-    def task_5_d(self, doc_id):
-        docs = self.task_5_c(doc_id=doc_id, visitor_uuid="d553098b2eed6771", sorting_function=self.sorting_function)
-        print(self.also_likes(doc_id, "d553098b2eed6771", self.unique_docs))
+    def task_5_d(self, doc_id): # use 140222104953-4a9c401847f56cbad2cb7376727cb4fe doc_uuid
+        docs = self.task_5_c(doc_id=doc_id, visitor_uuid="bff61d5860101b2b", sorting_function=self.sorting_function)
+        self.also_likes(doc_id, "bff61d5860101b2b", self.unique_docs)
         return docs
 
     def sorting_function(self, unique_docs):
