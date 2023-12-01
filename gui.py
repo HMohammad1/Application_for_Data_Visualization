@@ -81,7 +81,7 @@ class Gui:
 
         self.master = Tk()
         self.master.title("Document Tracker")
-        canvas = Canvas(self.master, width=1500, height=900, bg='bisque')
+        canvas = Canvas(self.master, width=1550, height=900, bg='bisque')
         canvas.pack()
 
         self.input_doc_id = StringVar()
@@ -90,7 +90,7 @@ class Gui:
         self.current_file = "Current file: "
         current_file_label = Label(self.master, text='Current file: ', bg='bisque')
         current_file_label.pack()
-        current_file_label.place(x=380, y=20, width=250)
+        current_file_label.place(x=380, y=10, width=250)
 
         # Input field
         input_label = Label(self.master, text='Document ID: ', bg='bisque')
@@ -120,18 +120,18 @@ class Gui:
         button_views_by_browser = Button(master=self.master,
                                          command=lambda: self.graph(32, 'Views by Browser Simplified', 'Browser', 'Views'),
                                          text="3b", bg='white')
-        button_views_by_browser.place(x=50, y=440, width=250, height=50)
+        button_views_by_browser.place(x=50, y=420, width=250, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers',
                                                                    'Visitor UUID', 'Time Spent Reading'),
                                         text="Reader profiles", bg='white')
-        button_reader_profiles.place(x=50, y=520, width=250, height=50)
+        button_reader_profiles.place(x=50, y=500, width=250, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(5, 'Also Likes', 'Document UUID', 'No. of users'),
                                         text="Also Likes", bg='white')
-        button_reader_profiles.place(x=50, y=620, width=250, height=50)
+        button_reader_profiles.place(x=50, y=580, width=250, height=50)
 
         # Vertical line
         canvas.create_line(350, 1500, 350, 0, fill="black", width=2)
