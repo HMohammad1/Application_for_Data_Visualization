@@ -4,6 +4,7 @@ from read_data import ReadData
 import pycountry_convert as pc
 from itertools import islice
 from user_agents import parse
+import graphviz as gv
 
 # makes the graph look nicer
 plt.style.use('fivethirtyeight')
@@ -134,6 +135,24 @@ class Task:
 
     def task_5_b(self, visitor_id):
         return self.data.get_visitor_doc_id(visitor_id)
+            
+    def also_likes(self, unique_docs):
+        print("Also likes function")
+        sorted_doc = {}
+        # for each doc ID in the unique_docs set collect all visitors
+        for doc in unique_docs:
+            visitor = self.data.get_visitor_df(doc)
+            for vis in visitor:
+                sorted_doc.setdefault(doc, []).append(vis)
+        print(sorted_doc)
+        dot_dict = {}
+        # for each doc id
+        for key, value in sorted_doc:
+            # assign node to unique doc
+            print("")
+            # gv.dot.node()
+            # assign nodes to unique visitors if not existing
+            # link visitor nodes to doc id nodes
 
     def task_5_c(self, doc_id, visitor_uuid=None, sorting_function=None):
         if visitor_uuid:
@@ -153,6 +172,7 @@ class Task:
                 unique_docs.add(doc)
 
         if sorting_function:
+            tmp = self.also_likes(unique_docs)
             return sorting_function(unique_docs)
         else:
             return unique_docs
