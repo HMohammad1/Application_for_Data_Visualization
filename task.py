@@ -4,7 +4,7 @@ from read_data import ReadData
 import pycountry_convert as pc
 from itertools import islice
 from user_agents import parse
-import graphviz as gv
+import graphviz
 
 # makes the graph look nicer
 plt.style.use('fivethirtyeight')
@@ -14,6 +14,7 @@ class Task:
     global data
     global country_df
     global reader_df
+    global unique_docs
 
     def __init__(self):
         # do not delete - required for line below
@@ -104,9 +105,6 @@ class Task:
 
         return new_browser, new_views
 
-
-
-
     def task_4(self):
         self.reader_df = self.data.get_reader_df()
         # list of unique user ids       
@@ -135,24 +133,6 @@ class Task:
 
     def task_5_b(self, visitor_id):
         return self.data.get_visitor_doc_id(visitor_id)
-            
-    def also_likes(self, unique_docs):
-        print("Also likes function")
-        sorted_doc = {}
-        # for each doc ID in the unique_docs set collect all visitors
-        for doc in unique_docs:
-            visitor = self.data.get_visitor_df(doc)
-            for vis in visitor:
-                sorted_doc.setdefault(doc, []).append(vis)
-        print(sorted_doc)
-        dot_dict = {}
-        # for each doc id
-        for key, value in sorted_doc:
-            # assign node to unique doc
-            print("")
-            # gv.dot.node()
-            # assign nodes to unique visitors if not existing
-            # link visitor nodes to doc id nodes
 
     def task_5_c(self, doc_id, visitor_uuid=None, sorting_function=None):
         if visitor_uuid:
@@ -170,15 +150,17 @@ class Task:
             docs = self.task_5_b(visitor)
             for doc in docs:
                 unique_docs.add(doc)
+        self.unique_docs = unique_docs
 
         if sorting_function:
-            tmp = self.also_likes(unique_docs)
             return sorting_function(unique_docs)
         else:
             return unique_docs
 
     def task_5_d(self, doc_id):
-        return self.task_5_c(doc_id=doc_id, visitor_uuid="d553098b2eed6771", sorting_function=self.sorting_function)
+        docs = self.task_5_c(doc_id=doc_id, visitor_uuid="d553098b2eed6771", sorting_function=self.sorting_function)
+        print(self.also_likes(doc_id, "d553098b2eed6771", self.unique_docs))
+        return docs
 
     def sorting_function(self, unique_docs):
         sorted_doc = {}
@@ -200,3 +182,55 @@ class Task:
         print(documents)
         return documents, viewers
 
+    def also_likes(self, doc_id, visitor_uuid, unique_docs):
+        sorted_doc = {}
+        # for each doc ID in the unique_docs set collect all visitors
+        for doc in unique_docs:
+            visitor = self.data.get_visitor_df(doc)
+            for vis in visitor:
+                sorted_doc.setdefault(doc, []).append(vis)
+        dot_dict = {}
+        # for each doc id
+        for doc, visitors in sorted_doc.items():
+            # assign node to unique doc
+            print("\n")
+            # get unique visitor ids for each doc id
+            unique_visitors = []
+            for v in visitors:
+                print(v)
+                if v in unique_visitors:
+                    continue
+                else:
+                    unique_visitors.append(v)
+            dot_dict.setdefault(doc, []).append(unique_visitors)
+        print("\nDoc dictionary:", dot_dict, "\n")
+        # create nodes for docs and visitors (convert to 4-dig hex first) and link them together using dot tool
+        dot = graphviz.Digraph('also_likes', comment='Also Likes Graph')
+        # widen space between layers
+        dot.attr(ranksep='2')
+        # change appearance of arrows
+        dot.edge_attr.update(arrowhead='vee', arrowsize='1.5')
+        dot.format = 'pdf'
+        # get 4-digit hex for doc_id and visitor_uuid
+        # color=green
+        input_doc_id_hex = doc_id[-4:]
+        input_visitor_uuid_hex = visitor_uuid[-4:]
+        for doc, visitors in dot_dict.items():
+            doc_hex = doc[-4:]
+            if doc_hex == input_doc_id_hex:
+                dot.node(doc_hex, doc_hex, shape='box', style='filled', fillcolor='green', color='green')
+            else:
+                dot.node(doc_hex, doc_hex, shape='box')
+            visitors = visitors[0]
+            for visitor in visitors:
+                visitor_hex = visitor[-4:]
+                if visitor_hex == input_visitor_uuid_hex:
+                    dot.node(visitor_hex, visitor_hex, style='filled', fillcolor='green', color='green')
+                else:
+                    dot.node(visitor_hex, visitor_hex)
+                # link the nodes
+                dot.edge(visitor_hex, doc_hex)
+        print("also_likes graph:", dot.source)
+        # automatically display png graph in a new window
+        dot.render(directory='doctest-output').replace('\\', '/')
+        dot.render(directory='doctest-output', view=True) 
