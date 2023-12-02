@@ -81,57 +81,57 @@ class Gui:
 
         self.master = Tk()
         self.master.title("Document Tracker")
-        canvas = Canvas(self.master, width=1550, height=900, bg='bisque')
+        canvas = Canvas(self.master, width=1550, height=890, bg='bisque')
         canvas.pack()
 
         self.input_doc_id = StringVar()
 
         # Current loaded file
-        self.current_file = "Current file: "
-        current_file_label = Label(self.master, text='Current file: ', bg='bisque')
+        self.current_file = "Document UUID: "
+        current_file_label = Label(self.master, text='Document UUID: ', bg='bisque')
         current_file_label.pack()
-        current_file_label.place(x=380, y=10, width=250)
+        current_file_label.place(x=380, y=10, width=270)
 
         # Input field
-        input_label = Label(self.master, text='Document ID: ', bg='bisque')
+        input_label = Label(self.master, text='Document UUID: ', bg='bisque')
         input_box = Entry(textvariable=self.input_doc_id)
         input_label.pack()
         input_box.pack()
-        input_label.place(x=50, y=55)
-        input_box.place(x=50, y=85, width=250)
-        set_file_button = Button(master=self.master, text='Load', command=self.load)
+        input_label.place(x=40, y=55)
+        input_box.place(x=40, y=85, width=270)
+        set_file_button = Button(master=self.master, text='Submit', command=self.load)
         set_file_button.pack()
         set_file_button.place(x=136, y=120)
 
         # Buttons
         button_views_by_country = Button(master=self.master,
-                                         command=lambda: self.graph(1, 'Viewers by Country', 'Countries', 'Viewers'),
-                                         text="Views by country", bg='white')
-        button_views_by_country.place(x=50, y=180, width=250, height=50)
+                                         command=lambda: self.graph(1, 'Views by Country', 'Countries', 'Viewers'),
+                                         text="Views by Country", bg='white')
+        button_views_by_country.place(x=40, y=180, width=270, height=50)
 
         button_views_by_continent = Button(master=self.master,
-                                           command=lambda: self.graph(2, 'Viewers by Continent', 'Continents',
-                                                                      'Viewers'), text="Views by continent", bg='white')
-        button_views_by_continent.place(x=50, y=260, width=250, height=50)
+                                           command=lambda: self.graph(2, 'Views by Continent', 'Continents',
+                                                                      'Viewers'), text="Views by Continent", bg='white')
+        button_views_by_continent.place(x=40, y=260, width=270, height=50)
 
-        button_views_by_browser = Button(master=self.master, command=lambda: self.graph(31, 'Views by Browser', 'Browser', 'Views'),text="Views by browser", bg='white')
-        button_views_by_browser.place(x=50, y=340, width=250, height=50)
+        button_views_by_browser = Button(master=self.master, command=lambda: self.graph(31, 'Views by Browser', 'Browser', 'Views'),text="Views by Browser", bg='white')
+        button_views_by_browser.place(x=40, y=340, width=270, height=50)
 
         button_views_by_browser = Button(master=self.master,
                                          command=lambda: self.graph(32, 'Views by Browser Simplified', 'Browser', 'Views'),
-                                         text="3b", bg='white')
-        button_views_by_browser.place(x=50, y=420, width=250, height=50)
+                                         text="Views by Browser Simplified", bg='white')
+        button_views_by_browser.place(x=40, y=420, width=270, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers',
                                                                    'Visitor UUID', 'Time Spent Reading'),
-                                        text="Reader profiles", bg='white')
-        button_reader_profiles.place(x=50, y=500, width=250, height=50)
+                                        text="Reader Profiles", bg='white')
+        button_reader_profiles.place(x=40, y=500, width=270, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(5, 'Also Likes', 'Document UUID', 'No. of users'),
                                         text="Also Likes", bg='white')
-        button_reader_profiles.place(x=50, y=580, width=250, height=50)
+        button_reader_profiles.place(x=40, y=580, width=270, height=50)
 
         # Vertical line
         canvas.create_line(350, 1500, 350, 0, fill="black", width=2)
