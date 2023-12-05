@@ -14,11 +14,12 @@ class Task:
     global data
     global country_df
     global reader_df
-    global unique_docs
+    unique_docs = None
+    global visitors
 
-    def __init__(self):
+    def __init__(self, filename):
         # do not delete - required for line below
-        self.data = ReadData()
+        self.data = ReadData(filename)
 
     def task_2_a(self, doc_id):
         self.country_df = self.data.get_country_df(doc_id)
@@ -96,7 +97,6 @@ class Task:
                     found = True
             if not found:
                 dict['Other'] += views[i]
-        print(dict)
         new_browser = []
         new_views = []
         for key, value in dict.items():
@@ -135,31 +135,30 @@ class Task:
         return self.data.get_visitor_doc_id(visitor_id)
 
     def task_5_c(self, doc_id, visitor_uuid=None, sorting_function=None):
-        if visitor_uuid:
-            v = self.task_5_a(doc_id)
-            visitors = []
-            for i in v.unique():
-                visitors.append(i)
-            visitors.append(visitor_uuid)
+        add_visitor = self.data.check_visitor_reads_doc(visitor_uuid, doc_id)
+        if visitor_uuid and add_visitor:
+            readers = self.task_5_a(doc_id)
+            self.visitors = []
+            for i in readers.unique():
+                self.visitors.append(i)
+            self.visitors.append(visitor_uuid)
         else:
-            visitors = self.task_5_a(doc_id)
-
-        unique_docs = set()
+            print("visitor not read doc")
+            self.visitors = self.task_5_a(doc_id)
+        self.unique_docs = set()
         # add each document of each visitor to a set ( so no duplicates allowed)
-        for visitor in visitors:
+        for visitor in self.visitors:
             docs = self.task_5_b(visitor)
             for doc in docs:
-                unique_docs.add(doc)
-        self.unique_docs = unique_docs
+                self.unique_docs.add(doc)
 
         if sorting_function:
-            return sorting_function(unique_docs)
+            return sorting_function(self.unique_docs)
         else:
-            return unique_docs
+            return self.unique_docs
 
-    def task_5_d(self, doc_id): # use 140222104953-4a9c401847f56cbad2cb7376727cb4fe doc_uuid
-        docs = self.task_5_c(doc_id=doc_id, visitor_uuid="bff61d5860101b2b", sorting_function=self.sorting_function)
-        self.also_likes(doc_id, "bff61d5860101b2b", self.unique_docs)
+    def task_5_d(self, doc_id, visitor_id = None): # use 140222104953-4a9c401847f56cbad2cb7376727cb4fe doc_uuid
+        docs = self.task_5_c(doc_id=doc_id, visitor_uuid=visitor_id, sorting_function=self.sorting_function)
         return docs
 
     def sorting_function(self, unique_docs):
@@ -179,31 +178,32 @@ class Task:
         for key, value in top_10_results.items():
             documents.append(key)
             viewers.append(value)
-        print(documents)
         return documents, viewers
 
-    def also_likes(self, doc_id, visitor_uuid, unique_docs):
+    def task_6(self, doc_id, visitor_uuid):
         sorted_doc = {}
+        self.task_5_c(doc_id, visitor_uuid)
         # for each doc ID in the unique_docs set collect all visitors
-        for doc in unique_docs:
+        for doc in self.unique_docs:
             visitor = self.data.get_visitor_df(doc)
             for vis in visitor:
-                sorted_doc.setdefault(doc, []).append(vis)
+                if vis in self.visitors:
+                    sorted_doc.setdefault(doc, []).append(vis)
         dot_dict = {}
         # for each doc id
         for doc, visitors in sorted_doc.items():
             # assign node to unique doc
-            print("\n")
+            # print("\n")
             # get unique visitor ids for each doc id
             unique_visitors = []
             for v in visitors:
-                print(v)
+                # print(v)
                 if v in unique_visitors:
                     continue
                 else:
                     unique_visitors.append(v)
             dot_dict.setdefault(doc, []).append(unique_visitors)
-        print("\nDoc dictionary:", dot_dict, "\n")
+        # print("\nDoc dictionary:", dot_dict, "\n")
         # create nodes for docs and visitors (convert to 4-dig hex first) and link them together using dot tool
         dot = graphviz.Digraph('also_likes', comment='Also Likes Graph')
         # widen space between layers
@@ -230,7 +230,7 @@ class Task:
                     dot.node(visitor_hex, visitor_hex)
                 # link the nodes
                 dot.edge(visitor_hex, doc_hex)
-        print("also_likes graph:", dot.source)
+        # print("also_likes graph:", dot.source)
         # automatically display png graph in a new window
         dot.render(directory='doctest-output').replace('\\', '/')
         dot.render(directory='doctest-output', view=True) 

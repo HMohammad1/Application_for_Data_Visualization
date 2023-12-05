@@ -4,8 +4,8 @@ import pandas as pd
 class ReadData:
     global data
 
-    def __init__(self):
-        self.data = pd.read_json('sample_100k_lines.json', lines=True)
+    def __init__(self, filename):
+        self.data = pd.read_json(filename, lines=True)
 
     def get_country_df(self, doc_id):
         dataframe = pd.DataFrame(self.data, columns=['env_doc_id', 'visitor_country'])
@@ -26,7 +26,26 @@ class ReadData:
         doc = self.data[self.data['visitor_uuid'] == visitor]['env_doc_id'].astype(str)
         return set(doc.unique())
 
+    def check_visitor_reads_doc(self, visitor_uuid, doc_id):
+        matching_rows = self.data[(self.data['visitor_uuid'] == visitor_uuid) & (self.data['env_doc_id'] == doc_id)]
+        if not matching_rows.empty:
+            return True
+        else:
+            return False
+
     def get_browsers(self):
         return self.data['visitor_useragent']
+
+    def ok(self):
+        # Group the DataFrame by 'env_doc_id' and count unique visitors
+        visitors_count = self.data.groupby('env_doc_id')['visitor_uuid'].nunique()
+
+        # Filter documents with more than 5 unique visitors
+        documents_more_than_5_visitors = visitors_count[visitors_count > 5]
+
+        if not documents_more_than_5_visitors.empty:
+            print(documents_more_than_5_visitors.index[1])  # Return the first document ID with more than 5 unique visitors
+        else:
+            return None
 
 
