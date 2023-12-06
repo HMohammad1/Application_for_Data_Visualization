@@ -5,7 +5,7 @@ if __name__ == '__main__':
     # Create ArgumentParser object
     parser = argparse.ArgumentParser(description='Process user input')
 
-    # Add the expected arguments
+    # Add the arguments to this parser
     parser.add_argument('-u', '--user_uuid', type=str, help='User UUID')
     parser.add_argument('-d', '--doc_uuid', type=str, help='Document UUID')
     parser.add_argument('-t', '--task_id', type=str, help='Task ID')
@@ -14,12 +14,13 @@ if __name__ == '__main__':
     # Parse the command-line arguments
     args = parser.parse_args()
 
-    # Access the values using the argument names
+    # Access the arguments using the argument names
     visitor_uuid = args.user_uuid
     doc_uuid = args.doc_uuid
     task_id = args.task_id
     file_name = args.file_name
 
+    # run the specified task depending on the arguments passed in
     if task_id == "7" or task_id == "6":
         gui = Gui(file_name, "6", visitor_uuid, doc_uuid)
     elif task_id == "5d":

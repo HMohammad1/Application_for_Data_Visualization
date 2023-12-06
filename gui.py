@@ -9,7 +9,7 @@ import re
 
 
 class Gui:
-
+    # initialise contractor with all the variables needed for this class
     def __init__(self, filename, task, visitor=None, doc=None):
         self.visitor_uuid = None
         self.doc_id = None
@@ -22,6 +22,7 @@ class Gui:
         self.user_id_box = None
         self.clear_graph = None
 
+        # get rid of any white spaces to ensure correct loading
         if doc is not None:
             self.doc_id = re.sub(r"\s+", "", doc)
         else:
@@ -33,8 +34,8 @@ class Gui:
 
         self.run_gui(task)
 
-    # Load new file
-    def load(self, doc=None, visitor=None):
+    # Load new file and visitor uuid for the application
+    def load(self):
         # get user input
         file = self.doc_id_box.get()
         visitor = self.user_id_box.get()
@@ -42,8 +43,9 @@ class Gui:
         self.doc_id = re.sub(r"\s+", "", file)
         self.visitor_uuid = re.sub(r"\s+", "", visitor)
 
-    # Generate graph
-    # task_number denotes what task to display on the graph
+    # Generate graph and add it inside the tkinter window
+    # task_number denotes what task to display on the graph, graph name is the name of the graph, x and y axis are for
+    # displaying the name of each axis respectively.
     def graph(self, task_number, graph_name=None, x_axis=None, y_axis=None):
         # clear the graph and toolbar when displaying new graphs
         if self.clear_graph is not None:
@@ -94,7 +96,6 @@ class Gui:
                 messagebox.showinfo("Warning", "The visitor uuid entered has not read the document")
                 return
             return
-
 
         # creates new figure
         figure = Figure(figsize=(10, 10), dpi=70)
@@ -217,6 +218,3 @@ class Gui:
             button_views_by_continent.invoke()
 
         self.master.mainloop()
-
-
-

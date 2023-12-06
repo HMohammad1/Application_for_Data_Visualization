@@ -181,11 +181,11 @@ class Task:
         if self.check_pd_data() is not False:
             docs, viewers, has_read = self.task_5_c(doc_id=doc_id, visitor_uuid=visitor_id, sorting_function=self.sorting_function)
             if len(docs) == 0:
-                return False, "Incorrect doc UUID specified"
+                return False, "Incorrect doc UUID specified", None
             else:
                 return docs, viewers, has_read
         else:
-            return False, "Incorrect filename or no filename specified."
+            return False, "Incorrect filename or no filename specified.", None
 
     def sorting_function(self, unique_docs):
         sorted_doc = {}
