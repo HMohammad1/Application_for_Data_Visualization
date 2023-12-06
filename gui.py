@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import messagebox
+
 import numpy as np
 from task import Task
 from matplotlib.figure import Figure
@@ -6,16 +8,30 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import re
 
 
-class Gui():
-    global master
-    clear_graph = None
-    toolbar = None
-    global user_id_box
-    global visitor_uuid
-    global doc_id_box
-    global graph_frame
-    global doc_id
-    global filename
+class Gui:
+
+    def __init__(self, filename, task, visitor=None, doc=None):
+        self.visitor_uuid = None
+        self.doc_id = None
+        self.filename = filename
+        self.graph_frame = None
+        self.master = Tk()
+        self.master.title("Document Tracker")
+        self.input_doc_id = StringVar()
+        self.doc_id_box = None
+        self.user_id_box = None
+        self.clear_graph = None
+
+        if doc is not None:
+            self.doc_id = re.sub(r"\s+", "", doc)
+        else:
+            self.doc_id = None
+        if visitor is not None:
+            self.visitor_uuid = re.sub(r"\s+", "", visitor)
+        else:
+            self.visitor_uuid = None
+
+        self.run_gui(task)
 
     # Load new file
     def load(self, doc=None, visitor=None):
@@ -39,16 +55,46 @@ class Gui():
         # display the graph depending on which button is pressed
         if task_number == 1:
             x, y = t.task_2_a(self.doc_id)
+            if x is False:
+                messagebox.showinfo("Warning", y)
+                return
         if task_number == 2:
             x, y = t.task_2_b(self.doc_id)
+            if x is False:
+                messagebox.showinfo("Warning", y)
+                return
         if task_number == 31:
             x, y = t.task_3_a()
+            if x is False:
+                messagebox.showinfo("Warning", y)
+                return
         if task_number == 32:
             x, y = t.task_3_b()
+            if x is False:
+                messagebox.showinfo("Warning", y)
+                return
         if task_number == 4:
             x, y = t.task_4()
+            if x is False:
+                messagebox.showinfo("Warning", y)
+                return
         if task_number == 5:
-            x, y = t.task_5_d(self.doc_id)
+            x, y, z = t.task_5_d(self.doc_id, self.visitor_uuid)
+            if x is False:
+                messagebox.showinfo("Warning", y)
+                return
+            if z is False:
+                messagebox.showinfo("Warning", "The visitor uuid entered has not read the document")
+        if task_number == 6:
+            param1, param2 = t.task_6(self.doc_id, self.visitor_uuid)
+            if param1 is False:
+                messagebox.showinfo("Warning", param2)
+                return
+            if param2 is False:
+                messagebox.showinfo("Warning", "The visitor uuid entered has not read the document")
+                return
+            return
+
 
         # creates new figure
         figure = Figure(figsize=(10, 10), dpi=70)
@@ -80,14 +126,8 @@ class Gui():
         figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=0.5)
         self.clear_graph = figure_canvas.get_tk_widget()
 
-    def __init__(self, filename, task=None, visitor=None, doc=None):
-        t = Task(filename)
-        self.filename = filename
-        self.doc_id = re.sub(r"\s+", "", doc)
-        self.visitor_uuid = re.sub(r"\s+", "", visitor)
-        self.master = Tk()
-        self.master.title("Document Tracker")
-        self.input_doc_id = StringVar()
+    def run_gui(self, task):
+        t = Task(self.filename)
 
         canvas = Canvas(self.master, width=1550, height=890, bg='bisque')
         canvas.pack()
@@ -111,8 +151,10 @@ class Gui():
         user_id_label.place(x=40, y=65)
         self.user_id_box.place(x=40, y=95, width=270)
 
-        self.doc_id_box.insert(0, doc)
-        self.user_id_box.insert(0, visitor)
+        if self.doc_id is not None:
+            self.doc_id_box.insert(0, self.doc_id)
+        if self.visitor_uuid is not None:
+            self.user_id_box.insert(0, self.visitor_uuid)
 
         button_views_by_country = Button(master=self.master,
                                          command=lambda: self.graph(1, 'Views by Country', 'Countries', 'Viewers'),
@@ -148,7 +190,7 @@ class Gui():
         button_also_likes.place(x=40, y=580, width=270, height=50)
 
         button_also_likes_graph = Button(master=self.master,
-                                         command=lambda: t.task_6(self.doc_id, self.visitor_uuid),
+                                         command=lambda: self.graph(6),
                                          text="Also Likes Graph", bg='white')
         button_also_likes_graph.place(x=40, y=650, width=270, height=50)
 
@@ -160,7 +202,7 @@ class Gui():
         self.graph_frame.place(x=400, y=50, width=1100, height=800)
 
         if task == "7" or task == "6":
-            t.task_6(doc, visitor)
+            button_also_likes_graph.invoke()
         elif task == "5d":
             button_also_likes.invoke()
         elif task == "4":
@@ -175,3 +217,6 @@ class Gui():
             button_views_by_continent.invoke()
 
         self.master.mainloop()
+
+
+

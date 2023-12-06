@@ -1,8 +1,4 @@
 from gui import Gui
-from task import Task
-
-global input_doc_id
-import sys
 import argparse
 
 if __name__ == '__main__':
@@ -24,10 +20,8 @@ if __name__ == '__main__':
     task_id = args.task_id
     file_name = args.file_name
 
-    if visitor_uuid is None and doc_uuid is None and task_id is None and file_name is None:
-        Gui()
-    elif task_id == "7" or task_id == "6":
-        gui = Gui(file_name, "7", visitor_uuid, doc_uuid)
+    if task_id == "7" or task_id == "6":
+        gui = Gui(file_name, "6", visitor_uuid, doc_uuid)
     elif task_id == "5d":
         gui = Gui(file_name, "5d", visitor_uuid, doc_uuid)
     elif task_id == "4":

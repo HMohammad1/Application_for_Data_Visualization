@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from read_data import ReadData
 import pycountry_convert as pc
 from itertools import islice
@@ -12,25 +11,35 @@ plt.style.use('fivethirtyeight')
 
 class Task:
     global data
-    global country_df
-    global reader_df
     unique_docs = None
     global visitors
 
     def __init__(self, filename):
-        # do not delete - required for line below
         self.data = ReadData(filename)
 
+    def check_pd_data(self):
+        if self.data.data is None:
+            return False
+
     def task_2_a(self, doc_id):
-        self.country_df = self.data.get_country_df(doc_id)
+        if self.check_pd_data() is not False:
+            country_df = self.data.get_country_df(doc_id)
+        else:
+            return False, "Incorrect filename or no filename specified."
+        if len(country_df) == 0:
+            return False, "Incorrect doc UUID specified"
         # find unique y-labels
-        unique = self.country_df['visitor_country'].unique()
+        unique = country_df['visitor_country'].unique()
         # find number of occurrences for each label
-        values = self.country_df['visitor_country'].value_counts()
+        values = country_df['visitor_country'].value_counts()
         return unique, values
 
     def task_2_b(self, doc_id):
-        unique, values = self.task_2_a(doc_id)
+        param1, param2 = self.task_2_a(doc_id)
+        if param1 is not False:
+            unique, values = self.task_2_a(doc_id)
+        else:
+            return False, param2
         # the different continent names and codes
         continent_names = {
             'NA': 'North America',
@@ -60,7 +69,10 @@ class Task:
         return continents, continents_values
 
     def task_3_a(self):
-        browsers = self.data.get_browsers()
+        if self.check_pd_data() is not False:
+            browsers = self.data.get_browsers()
+        else:
+            return False, "Incorrect filename or no filename specified."
         browser_counts = {}
         for user_agent in browsers:
             ua = parse(user_agent)
@@ -89,6 +101,8 @@ class Task:
             'Other': 0
         }
         browser, views = self.task_3_a()
+        if browser is False:
+            return False, views
         found = False
         for i, j in enumerate(browser):
             for key in dict:
@@ -100,17 +114,21 @@ class Task:
         new_browser = []
         new_views = []
         for key, value in dict.items():
-            new_browser.append(key)
-            new_views.append(value)
+            if value != 0:
+                new_browser.append(key)
+                new_views.append(value)
 
         return new_browser, new_views
 
     def task_4(self):
-        self.reader_df = self.data.get_reader_df()
+        if self.check_pd_data() is not False:
+            reader_df = self.data.get_reader_df()
+        else:
+            return False, "Incorrect filename or no filename specified."
         # list of unique user ids       
-        unique_ids_to_match = self.reader_df['visitor_uuid'].unique()
+        unique_ids_to_match = reader_df['visitor_uuid'].unique()
         # list of user ids and read time
-        userid_readtime_dict = self.reader_df.to_dict(orient='records')
+        userid_readtime_dict = reader_df.to_dict(orient='records')
         # loop through dictionary and get all read times for each user id
         d = {}
         for id in unique_ids_to_match:
@@ -142,8 +160,9 @@ class Task:
             for i in readers.unique():
                 self.visitors.append(i)
             self.visitors.append(visitor_uuid)
+            has_read = True
         else:
-            print("visitor not read doc")
+            has_read = False
             self.visitors = self.task_5_a(doc_id)
         self.unique_docs = set()
         # add each document of each visitor to a set ( so no duplicates allowed)
@@ -153,13 +172,20 @@ class Task:
                 self.unique_docs.add(doc)
 
         if sorting_function:
-            return sorting_function(self.unique_docs)
+            docs, viewers = sorting_function(self.unique_docs)
+            return docs, viewers, has_read
         else:
             return self.unique_docs
 
-    def task_5_d(self, doc_id, visitor_id = None): # use 140222104953-4a9c401847f56cbad2cb7376727cb4fe doc_uuid
-        docs = self.task_5_c(doc_id=doc_id, visitor_uuid=visitor_id, sorting_function=self.sorting_function)
-        return docs
+    def task_5_d(self, doc_id, visitor_id=None):
+        if self.check_pd_data() is not False:
+            docs, viewers, has_read = self.task_5_c(doc_id=doc_id, visitor_uuid=visitor_id, sorting_function=self.sorting_function)
+            if len(docs) == 0:
+                return False, "Incorrect doc UUID specified"
+            else:
+                return docs, viewers, has_read
+        else:
+            return False, "Incorrect filename or no filename specified."
 
     def sorting_function(self, unique_docs):
         sorted_doc = {}
@@ -181,14 +207,22 @@ class Task:
         return documents, viewers
 
     def task_6(self, doc_id, visitor_uuid):
+        if self.check_pd_data() is False:
+            return False, "Incorrect filename or no filename specified"
+        has_read = True
+        if not self.data.check_visitor_reads_doc(visitor_uuid, doc_id):
+            has_read = False
         sorted_doc = {}
         self.task_5_c(doc_id, visitor_uuid)
+        if len(self.unique_docs) == 0:
+            return False, "Incorrect doc UUID specified"
         # for each doc ID in the unique_docs set collect all visitors
         for doc in self.unique_docs:
             visitor = self.data.get_visitor_df(doc)
             for vis in visitor:
-                if vis in self.visitors:
-                    sorted_doc.setdefault(doc, []).append(vis)
+                for v in self.visitors:
+                    if vis == v:
+                        sorted_doc.setdefault(doc, []).append(vis)
         dot_dict = {}
         # for each doc id
         for doc, visitors in sorted_doc.items():
@@ -214,7 +248,10 @@ class Task:
         # get 4-digit hex for doc_id and visitor_uuid
         # color=green
         input_doc_id_hex = doc_id[-4:]
-        input_visitor_uuid_hex = visitor_uuid[-4:]
+        if visitor_uuid is not None:
+            input_visitor_uuid_hex = visitor_uuid[-4:]
+        else:
+            input_visitor_uuid_hex = None
         for doc, visitors in dot_dict.items():
             doc_hex = doc[-4:]
             if doc_hex == input_doc_id_hex:
@@ -233,4 +270,5 @@ class Task:
         # print("also_likes graph:", dot.source)
         # automatically display png graph in a new window
         dot.render(directory='doctest-output').replace('\\', '/')
-        dot.render(directory='doctest-output', view=True) 
+        dot.render(directory='doctest-output', view=True)
+        return True, has_read

@@ -5,7 +5,10 @@ class ReadData:
     global data
 
     def __init__(self, filename):
-        self.data = pd.read_json(filename, lines=True)
+        try:
+            self.data = pd.read_json(filename, lines=True)
+        except ValueError:
+            self.data = None
 
     def get_country_df(self, doc_id):
         dataframe = pd.DataFrame(self.data, columns=['env_doc_id', 'visitor_country'])
@@ -36,16 +39,5 @@ class ReadData:
     def get_browsers(self):
         return self.data['visitor_useragent']
 
-    def ok(self):
-        # Group the DataFrame by 'env_doc_id' and count unique visitors
-        visitors_count = self.data.groupby('env_doc_id')['visitor_uuid'].nunique()
-
-        # Filter documents with more than 5 unique visitors
-        documents_more_than_5_visitors = visitors_count[visitors_count > 5]
-
-        if not documents_more_than_5_visitors.empty:
-            print(documents_more_than_5_visitors.index[1])  # Return the first document ID with more than 5 unique visitors
-        else:
-            return None
 
 
