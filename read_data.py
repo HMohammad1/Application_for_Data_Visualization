@@ -3,12 +3,15 @@ import pandas as pd
 
 class ReadData:
     # initialise the variable that will store the data from the input file
-    def __init__(self, filename):
-        try:
-            self.data = pd.read_json(filename, lines=True)
-        # check for no files inputted
-        except ValueError:
-            self.data = None
+    def __init__(self, filename, filepath=None):
+        if filepath is not None:
+            self.data = pd.read_json(filepath, lines=True)
+        else:
+            try:
+                self.data = pd.read_json(filename, lines=True)
+            # check for no files inputted
+            except ValueError:
+                self.data = None
 
     # return the countries that match the doc uuid inserted
     def get_country_df(self, doc_id):

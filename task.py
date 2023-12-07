@@ -11,8 +11,11 @@ plt.style.use('fivethirtyeight')
 
 class Task:
     # initialise the global class variables
-    def __init__(self, filename):
-        self.data = ReadData(filename)
+    def __init__(self, filename, new_file_path=None):
+        if new_file_path is not None:
+            self.data = ReadData(filename, new_file_path)
+        else:
+            self.data = ReadData(filename)
         self.unique_docs = None
         self.visitors = None
 

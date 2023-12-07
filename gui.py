@@ -25,6 +25,7 @@ class Gui:
         self.user_id_box = None
         self.clear_graph = None
         self.file_box = None
+        self.new_file_path = None
 
         # get rid of any white spaces to ensure correct loading
         if doc is not None:
@@ -55,7 +56,10 @@ class Gui:
         if self.clear_graph is not None:
             self.clear_graph.destroy()
 
-        t = Task(self.filename)
+        if self.new_file_path is not None:
+            t = Task(self.filename, self.new_file_path)
+        else:
+            t = Task(self.filename)
         x = None
         y = None
         # display the graph depending on which button is pressed.
@@ -138,12 +142,13 @@ class Gui:
         if file_path:  # Check if a file was selected
             # Get the current directory
             current_directory = os.path.dirname(os.path.abspath(__file__))
+            print(current_directory)
             # Move the selected file to the current directory
             file_name = os.path.basename(file_path)
             self.filename = file_name
-            new_file_path = os.path.join(current_directory, file_name)
+            self.new_file_path = os.path.join(current_directory, file_name)
             try:
-                shutil.copy(file_path, new_file_path)
+                shutil.copy(file_path, self.new_file_path)
                 messagebox.showinfo("Notification", "File is now loaded in")
             except FileNotFoundError:
                 print("Error: File not found.")
