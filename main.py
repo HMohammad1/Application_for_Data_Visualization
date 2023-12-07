@@ -35,3 +35,5 @@ if __name__ == '__main__':
         gui = Gui(file_name, "2a", visitor_uuid, doc_uuid)
     elif task_id == "2b":
         gui = Gui(file_name, "2b", visitor_uuid, doc_uuid)
+    else:
+        Gui()

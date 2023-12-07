@@ -1,5 +1,8 @@
+import json
+import os
+import shutil
 from tkinter import *
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 
 import numpy as np
 from task import Task
@@ -10,7 +13,7 @@ import re
 
 class Gui:
     # initialise contractor with all the variables needed for this class
-    def __init__(self, filename, task, visitor=None, doc=None):
+    def __init__(self, filename=None, task=None, visitor=None, doc=None):
         self.visitor_uuid = None
         self.doc_id = None
         self.filename = filename
@@ -21,6 +24,7 @@ class Gui:
         self.doc_id_box = None
         self.user_id_box = None
         self.clear_graph = None
+        self.file_box = None
 
         # get rid of any white spaces to ensure correct loading
         if doc is not None:
@@ -128,6 +132,24 @@ class Gui:
         figure_canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=0.5)
         self.clear_graph = figure_canvas.get_tk_widget()
 
+    def load_file(self):
+        file_path = filedialog.askopenfilename()
+
+        if file_path:  # Check if a file was selected
+            # Get the current directory
+            current_directory = os.path.dirname(os.path.abspath(__file__))
+            # Move the selected file to the current directory
+            file_name = os.path.basename(file_path)
+            self.filename = file_name
+            new_file_path = os.path.join(current_directory, file_name)
+            try:
+                shutil.copy(file_path, new_file_path)
+                messagebox.showinfo("Notification", "File is now loaded in")
+            except FileNotFoundError:
+                print("Error: File not found.")
+            except shutil.Error as e:
+                print(f"Error: {e}")
+
     # runs the tkinter window that shows all the buttons and the graph inside it.
     def run_gui(self, task):
         t = Task(self.filename)
@@ -145,7 +167,11 @@ class Gui:
         # button to submit the data so that the new doc / visitor uuid can be used.
         set_file_button = Button(master=self.master, text='Submit', command=self.load)
         set_file_button.pack()
-        set_file_button.place(x=136, y=125)
+        set_file_button.place(x=90, y=170)
+        # button to load file
+        set_file_button = Button(master=self.master, text='File', command=self.load_file)
+        set_file_button.pack()
+        set_file_button.place(x=150, y=170)
         # input label for visitor uuid
         user_id_label = Label(self.master, text='Visitor UUID: ', bg='bisque')
         self.user_id_box = Entry()
@@ -153,6 +179,13 @@ class Gui:
         self.user_id_box.pack()
         user_id_label.place(x=40, y=65)
         self.user_id_box.place(x=40, y=95, width=270)
+        # input label for adding a file
+        file_label = Label(self.master, text='Input Document: ', bg='bisque')
+        self.file_box = Entry()
+        file_label.pack()
+        self.file_box.pack()
+        file_label.place(x=40, y=125)
+        self.file_box.place(x=40, y=145, width=270)
         # write the data from the command line into their input fields
         if self.doc_id is not None:
             self.doc_id_box.insert(0, self.doc_id)
@@ -163,40 +196,40 @@ class Gui:
         button_views_by_country = Button(master=self.master,
                                          command=lambda: self.graph(1, 'Views by Country', 'Countries', 'Viewers'),
                                          text="Views by Country", bg='white')
-        button_views_by_country.place(x=40, y=180, width=270, height=50)
+        button_views_by_country.place(x=40, y=200, width=270, height=50)
 
         button_views_by_continent = Button(master=self.master,
                                            command=lambda: self.graph(2, 'Views by Continent', 'Continents',
                                                                       'Viewers'), text="Views by Continent", bg='white')
-        button_views_by_continent.place(x=40, y=260, width=270, height=50)
+        button_views_by_continent.place(x=40, y=280, width=270, height=50)
 
         button_views_by_browser = Button(master=self.master,
                                          command=lambda: self.graph(31, 'Views by Browser', 'Browser', 'Views'),
                                          text="Views by Browser", bg='white')
-        button_views_by_browser.place(x=40, y=340, width=270, height=50)
+        button_views_by_browser.place(x=40, y=360, width=270, height=50)
 
         button_views_by_browser_simplified = Button(master=self.master,
                                                     command=lambda: self.graph(32, 'Views by Browser Simplified',
                                                                                'Browser',
                                                                                'Views'),
                                                     text="Views by Browser Simplified", bg='white')
-        button_views_by_browser_simplified.place(x=40, y=420, width=270, height=50)
+        button_views_by_browser_simplified.place(x=40, y=440, width=270, height=50)
 
         button_reader_profiles = Button(master=self.master,
                                         command=lambda: self.graph(4, 'Reader Profiles: Top 10 Most Avid Readers',
                                                                    'Visitor UUID', 'Time Spent Reading'),
                                         text="Reader Profiles", bg='white')
-        button_reader_profiles.place(x=40, y=500, width=270, height=50)
+        button_reader_profiles.place(x=40, y=520, width=270, height=50)
 
         button_also_likes = Button(master=self.master,
                                    command=lambda: self.graph(5, 'Also Likes', 'Document UUID', 'No. of users'),
                                    text="Also Likes", bg='white')
-        button_also_likes.place(x=40, y=580, width=270, height=50)
+        button_also_likes.place(x=40, y=600, width=270, height=50)
 
         button_also_likes_graph = Button(master=self.master,
                                          command=lambda: self.graph(6),
                                          text="Also Likes Graph", bg='white')
-        button_also_likes_graph.place(x=40, y=650, width=270, height=50)
+        button_also_likes_graph.place(x=40, y=680, width=270, height=50)
 
         # Vertical line to split the buttons and graphs
         canvas.create_line(350, 1500, 350, 0, fill="black", width=2)
