@@ -205,6 +205,7 @@ class Gui:
         self.graph_frame = Frame(self.master, bg='white')
         self.graph_frame.place(x=400, y=50, width=1100, height=800)
         # get the data from the command line and pre insert / run the selected graph onto the display
+        print("Loading, please wait")
         if task == "7" or task == "6":
             button_also_likes_graph.invoke()
         elif task == "5d":

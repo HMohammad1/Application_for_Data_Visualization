@@ -2,19 +2,19 @@
 digraph also_likes {
 	edge [arrowhead=vee arrowsize=1.5]
 	ranksep=2
-	"56e3" [label="56e3" shape=box]
-	"1b2b" [label="1b2b"]
-	"1b2b" -> "56e3"
+	e77d [label=e77d shape=box]
+	"1b2b" [label="1b2b" color=green fillcolor=green style=filled]
+	"1b2b" -> e77d
 	"9da6" [label="9da6" shape=box]
-	"1b2b" [label="1b2b"]
+	"1b2b" [label="1b2b" color=green fillcolor=green style=filled]
 	"1b2b" -> "9da6"
+	"56e3" [label="56e3" shape=box]
+	"1b2b" [label="1b2b" color=green fillcolor=green style=filled]
+	"1b2b" -> "56e3"
 	"90c2" [label="90c2" shape=box]
-	"1b2b" [label="1b2b"]
+	"1b2b" [label="1b2b" color=green fillcolor=green style=filled]
 	"1b2b" -> "90c2"
 	b4fe [label=b4fe color=green fillcolor=green shape=box style=filled]
-	"1b2b" [label="1b2b"]
+	"1b2b" [label="1b2b" color=green fillcolor=green style=filled]
 	"1b2b" -> b4fe
-	e77d [label=e77d shape=box]
-	"1b2b" [label="1b2b"]
-	"1b2b" -> e77d
 }

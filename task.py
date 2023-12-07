@@ -62,9 +62,9 @@ class Task:
         for i, j in enumerate(unique):
             continent_code = pc.country_alpha2_to_continent_code(j)
             if continent_code in continent_temp:
-                continent_temp[continent_code] += values[i]
+                continent_temp[continent_code] += values.iloc[i]
             else:
-                continent_temp[continent_code] = values[i]
+                continent_temp[continent_code] = values.iloc[i]
         # return the continents as full names and viewers in the temp dictionary
         for key, value in continent_temp.items():
             continent_name = continent_names.get(key)
