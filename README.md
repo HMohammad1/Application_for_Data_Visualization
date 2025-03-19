@@ -30,3 +30,7 @@ parameter
 7. Also likes graph: Generates a graph representation of the above functionality in .pdf format.
 Document UUIDs and visitor UUIDs have been shortened to their last 4 hex digits. To run this function download: https://graphviz.org/download/ which is used to render the graph and make the pdf. A windows restart will be required.
 
+E.g. using '140224195414-e5a9acedd5eb6631bb6b39422fba6798' and '04daa9ed9dde73d3' as 'env_doc_id' and 'visitor_uuid' respectively and selecting function 3:
+
+<img width="1169" alt="image" src="https://github.com/user-attachments/assets/997b6701-5979-49fc-a536-d71da8091ace" />
+
